@@ -38,7 +38,7 @@
         }
         #features {
             top: 0;
-            height: 100px;
+            height: 120px;
             margin-top: 20px;
             width: 310px;
         }
@@ -90,11 +90,13 @@
 <body>
 
 <div id='map'></div>
-<div class='map-overlay' id='features'><h2>Share Bachelor's Degree or Higher</h2><div id='pd'><p>Hover over an area!</p></div></div>
+<div class='map-overlay' id='features'><h2>Whole Foods & Trader Joe’s Locations vs. Education (% Population With Bachelors Degree)</h2><div id='pd'><p>Zoom in for more detailed data</p></div></div>
 <div class='map-overlay' id='legend'></div>
 
 <div id='state-legend' class='legend'>
-    <h4>Share Bachelor's Degree or Higher</h4>
+    <div><span style='background-color: #2d786e'></span>Whole Foods</div>
+    <div><span style='background-color: #c50033'></span>Trader Joe's</div> 
+    <h4>Education — % Population With Bachelors Degree (Census, 2016)</h4>
     <div><span style='background-color: #08306b'></span>40.1 - 50.6</div>
     <div><span style='background-color: #2879b9'></span>30.1 - 40</div>
     <div><span style='background-color: #73b3d8'></span>20.1 - 30</div>
@@ -103,7 +105,9 @@
 </div>
 
 <div id='zipcode-legend' class='legend' style='display: none;'>
-    <h4>Share Bachelor's Degree or Higher</h4>
+    <div><span style='background-color: #2d786e'></span>Whole Foods</div>
+    <div><span style='background-color: #c50033'></span>Trader Joe's</div> 
+    <h4>Education — % Population With Bachelors Degree (Census, 2016)</h4>
     <div><span style='background-color: #08458b'></span>90.1 - 100</div>
     <div><span style='background-color: #0a549e'></span>80.1 - 90</div>
     <div><span style='background-color: #2172b6'></span>70.1 - 80</div>
@@ -155,7 +159,7 @@ map.on('load', function() {
         } else if (state.length > 0) {
             document.getElementById('pd').innerHTML = "</h3><p>" + "<strong>State: </strong>" + state[0].properties.Geography + "</h3><p>" + "<strong>% </strong>" + state[0].properties.share_bachelors_degree_or_higher;
         } else {
-            document.getElementById('pd').innerHTML = '<p>Hover over an area!</p>';
+            document.getElementById('pd').innerHTML = '<p>Zoom in for more detailed data</p>';
         }
     });
 
