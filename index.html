@@ -148,10 +148,10 @@ map.on('load', function() {
     // change info window on hover
     map.on('mousemove', function (e) {
         var zipcode = map.queryRenderedFeatures(e.point, {
-            layers: ['share_bachelors_degree_or_higher_zcta']
+            layers: ['education_zcta']
         });
         var state = map.queryRenderedFeatures(e.point, {
-            layers: ['share_bachelors_degree_or_higher_state']
+            layers: ['education_state']
         });
 
         if (zipcode.length > 0) {
