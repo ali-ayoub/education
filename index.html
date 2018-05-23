@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>share_bachelors_degree_or_higher</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        h2, h3 {
+            margin: 10px;
+            font-size: 1.2em;
+        }
+        h3 {
+            font-size: 1em;
+        }
+        p {
+            font-size: 0.85em;
+            margin: 10px;
+            text-align: left;
+        }
+        .map-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.8);
+            margin-right: 20px;
+            font-family: Lato, sans-serif;
+            overflow: auto;
+            border-radius: 3px;
+        }
+        #map {
+            position:absolute;
+            top:0;
+            bottom:0;
+            width:100%;
+        }
+        #features {
+            top: 0;
+            height: 100px;
+            margin-top: 20px;
+            width: 310px;
+        }
+/*        #legend {
+            padding: 15px;
+            font: 15px 'Lato', sans-serif;
+            position: absolute;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+            line-height: 22px;
+            height: 280px;
+            margin-bottom: 60px;
+            width: 150px;
+            z-index: 1;
+        }*/
+        .legend-key {
+            display:inline-block;
+            border-radius: 50%;
+            width: 10px;
+            height: 10px;
+            margin-right: 5px;
+        }
+
+        .legend div span {
+            border-radius: 50%;
+            display: inline-block;
+            height: 10px;
+            margin-right: 5px;
+            width: 10px;
+        }
+
+        .legend {
+            background-color: #fff;
+            border-radius: 3px;
+            bottom: 30px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            padding: 10px;
+            position: absolute;
+            right: 10px;
+            z-index: 1;
+        }
+
+        .legend h4 {
+            margin: 0 0 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id='map'></div>
+<div class='map-overlay' id='features'><h2>Share Bachelors Degree or Higher</h2><div id='pd'><p>Hover over an area!</p></div></div>
+<div class='map-overlay' id='legend'></div>
+
+<div id='state-legend' class='legend'>
+    <h4>Share Bachelors Degree or Higher<</h4>
+    <div><span style='background-color: #08306b'></span>40.1 - 50.6</div>
+    <div><span style='background-color: #2879b9'></span>30.1 - 40</div>
+    <div><span style='background-color: #73b3d8'></span>20.1 - 30</div>
+    <div><span style='background-color: #c8ddf0'></span>18.3 - 20</div>
+    <div><span style='background-color: #f5faff'></span>0 - 18.2</div>
+</div>
+
+<div id='zipcode-legend' class='legend' style='display: none;'>
+    <h4>Share Bachelors Degree or Higher<</h4>
+    <div><span style='background-color: #08458b'></span>90.1 - 100</div>
+    <div><span style='background-color: #0a549e'></span>80.1 - 90</div>
+    <div><span style='background-color: #2172b6'></span>70.1 - 80</div>
+    <div><span style='background-color: #3e8ec4'></span>60.1 - 70</div>
+    <div><span style='background-color: #60a6d2'></span>50.1 - 60</div>
+    <div><span style='background-color: #89bfdd'></span>40.1 - 50</div>
+    <div><span style='background-color: #b0d2e8'></span>30.1 - 40</div>
+    <div><span style='background-color: #cde0f2'></span>20.1 - 30</div>
+    <div><span style='background-color: #e2eef9'></span>10.1 - 20</div>
+    <div><span style='background-color: #f7fbff'></span>0 - 10</div>
+</div>
+
+<script>
+
+// define access token
+mapboxgl.accessToken = 'pk.eyJ1IjoiYWxpYXlvdWIiLCJhIjoiY2pmd3M4aHZoMXh0dDM0bzcxdGxubTM1byJ9.jFzaMKL7l6DTLK8oI4hRhA';
+
+var zoomThreshold = 6;
+
+//create map
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/aliayoub/cjhjehrv01l912rqhi2y81ky5' // map style URL from Mapbox Studio
+});
+
+// wait for map to load before adjusting it
+map.on('load', function() {
+
+    // make a pointer cursor
+    map.getCanvas().style.cursor = 'default';
+
+    // set map bounds to the continental US
+    map.fitBounds([[-133.2421875, 16.972741], [-47.63671875, 52.696361]]);
+
+    // make a pointer cursor
+    map.getCanvas().style.cursor = 'default';
+
+    // change info window on hover
+    map.on('mousemove', function (e) {
+        var zipcode = map.queryRenderedFeatures(e.point, {
+            layers: ['share_bachelors_degree_or_higher_zcta']
+        });
+        var state = map.queryRenderedFeatures(e.point, {
+            layers: ['share_bachelors_degree_or_higher_state']
+        });
+
+        if (zipcode.length > 0) {
+            document.getElementById('pd').innerHTML = "</h3><p>" + "<strong>ZCTA: </strong>" + zipcode[0].properties.Geography + "</h3><p>" + "<strong>% </strong>" + zipcode[0].properties.share_bachelors_degree_or_higher;
+        } else if (state.length > 0) {
+            document.getElementById('pd').innerHTML = "</h3><p>" + "<strong>State: </strong>" + state[0].properties.Geography + "</h3><p>" + "<strong>% </strong>" + state[0].properties.share_bachelors_degree_or_higher;
+        } else {
+            document.getElementById('pd').innerHTML = '<p>Hover over an area!</p>';
+        }
+    });
+
+});
+
+var stateLegendEl = document.getElementById('state-legend');
+var zipcodeLegendEl = document.getElementById('zipcode-legend');
+map.on('zoom', function() {
+    if (map.getZoom() > zoomThreshold) {
+        stateLegendEl.style.display = 'none';
+        zipcodeLegendEl.style.display = 'block';
+    } else {
+        stateLegendEl.style.display = 'block';
+        zipcodeLegendEl.style.display = 'none';
+    }
+});
+
+</script>
+
+</body>
+</html>
